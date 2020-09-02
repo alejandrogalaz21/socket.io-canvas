@@ -35,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/alejandrogalaz21/node-babel-server-/issues"
   },
-  "homepage": "https://github.com/alejandrogalaz21/node-babel-server-#readme"
+  "homepage": "https://github.com/alejandrogalaz21/node-babel-server-#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
 }

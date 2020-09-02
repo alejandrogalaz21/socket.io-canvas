@@ -1,13 +1,34 @@
 import http from 'http'
+import express from 'express'
+import socketIo from 'socket.io'
 
-const port = 1337
-const server = http
-  .createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' })
-    res.end('Hello World\n')
+const app = express()
+const server = http.Server(app)
+const io = socketIo(server)
+
+let lineHistory = []
+
+io.on('connection', function (socket) {
+  console.log('new connection')
+
+  for (let i in lineHistory) {
+    socket.emit('draw_line', { line: lineHistory[i] })
+  }
+
+  socket.on('draw_line', function (data) {
+    lineHistory.push(data.line)
+    io.emit('draw_line', { line: data.line })
   })
-  .listen(port, '127.0.0.1')
 
-console.log(`Server running at http://127.0.0.1:${port}/`)
+  socket.on('clean_canvas', function () {
+    io.emit('clean_canvas', true)
+  })
+})
 
-export default server
+app.get('/', (req, res) => {
+  res.send('<h1>Hello world</h1>')
+})
+
+server.listen(5000, () => {
+  console.log('listening on *:5000')
+})
